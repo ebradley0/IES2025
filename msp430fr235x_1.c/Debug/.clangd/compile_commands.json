@@ -1,0 +1,7 @@
+[
+   {
+      "directory" : "C:/Users/ebrad/Desktop/Heater-main/msp430fr235x_1.c/Debug",
+      "command"   : "clang++ -I\"C:/ti/ccs2002/ccs/ccs_base/msp430/include\" -I\"C:/Users/ebrad/Desktop/Heater-main/msp430fr235x_1.c\" -I\"C:/ti/ccs2002/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR2355__ -D_FRWP_ENABLE -D_INFO_FRWP_ENABLE",
+      "file"      : "C:/Users/ebrad/Desktop/Heater-main/msp430fr235x_1.c/msp430fr235x_1.c"
+   }
+]
