@@ -9,7 +9,9 @@ int main(void)
 
     while(1)
     {
-      setRGB(char 255, char 0, char 0);
+      setRGB(255, 0, 0);
+      __delay_cycles(1000000);
+      setRGB(0, 255,  0);
       __delay_cycles(1000000);
     }
 }
