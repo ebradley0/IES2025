@@ -21,4 +21,10 @@ void initRGB()
     TB3CCTL3 = OUTMOD_3;                       
     TB3CCR3 = 100;                          //Blue
     TB3CTL = TBSSEL__SMCLK | MC__UP | TBCLR;  // SMCLK, up mode, clear TBR
+    
+}
+
+void initPWM()
+{
+    //Merge RGB and Servo inits in here
 }
