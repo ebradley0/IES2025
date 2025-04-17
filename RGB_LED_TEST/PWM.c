@@ -26,17 +26,16 @@ void initPWM() {
   TB3CCR3 = 100; // Blue
 
   // Servo
+  TB1CCR0 = 20000;
   P2DIR |= BIT1;
   P2SEL0 |= BIT1;
   P2SEL1 &= ~BIT1; // Redundancy check to make sure sel1 is 0.
-  TB3CCTL4 = OUTMOD_3;
-  TB3CCR4 = 0; // Servo is initialized to be closed, so no signal
+  TB1CCTL2 = OUTMOD_7;
+  TB1CCR2 = 1500; // Servo is initialized to be closed, so no signal
 
   // Cleanup
   TB3CTL = TBSSEL__SMCLK | MC__UP | TBCLR; // SMCLK, up mode, clear TBR
+  TB1CTL = TBSSEL__SMCLK | MC__UP | TBCLR; // SMCLK, up mode, clear TBR
 }
 
-void setServo(char position) {
-  TB3CCTL4 = position * 1024 /
-             2 // input is either 0 or 1, will set servo at 0% or 50% position?
-}
+void setServo(char position) { TB1CCR2 = position; }

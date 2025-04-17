@@ -1,0 +1,14 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "RGB_LED_TEST",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "RGB_LED_TEST",
+                "resourceId": "/RGB_LED_TEST"
+            }
+        }
+    ]
+}

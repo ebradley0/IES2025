@@ -1,3 +1,4 @@
 #include <msp430.h>
-void initRGB();
+void initPWM();
 void setRGB(char red, char green, char blue);
+void setServo(char position);
