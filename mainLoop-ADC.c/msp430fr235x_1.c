@@ -1,82 +1,23 @@
-//make/include files into this file
 #include <msp430.h>
-#include <rgbLED.h>
-#include <system.h>
+#include "sensors.h"
 
 
-int main(void)
-{
-
-    //setup code (runs when processor resets)
-
-    WDTCTL = WDTPW | WDTHOLD;
-
-    rgbInit();
+int main(void) {
+    WDTCTL = WDTPW | WDTHOLD;        // Stop watchdog timer
 
 
+    initADC();                       // Initialize ADC system
 
+    while (1) {
+        int overTemp = readThermistor();      // Returns 1 if over-temp
+        int flamePresent = readThermocouple(); // Returns 1 if flame present
 
-while(1){ //while we idle
+        if (flamePresent && !overTemp) {
+            //print heating cycle
+        } else {
+            //Print shutodnw
+        }
 
-    while(!CallForHeat()); //pulling example for call for heat
-
-    Setignitor();
-    turnOnPilotValve()
-    Wait2seconds()
-    checkflame()
-
-
-    /*
-    while loop below helps us keep three main functions to turn everything off as a single variable based on multiplt condtioions
-    */
-
-   // while((CallforHeat()) | (checkflame()) | (readBoilerTemp()<Threshold)); //while these conditions are true keep doing this "thing"
-
-// another way of doing the while loop
-
-while(1){
-
-    cfh = CallForHeat;
-    cf = checkflame;
-
-
-    if(!CallforHeat()) {
-        break;
+        __delay_cycles(50000); // Short delay (~50ms)
     }
-
-    if (checkflame()){
-        Flame_extinguished = 1;
-        break;
-
-    }
-
-    
-
-
 }
-
-    turnoffMainValve();
-    turnOffPilotValve();
-    turnOffIgniter();
-
-
-
-
-
-
-    _bis_SR_register(CPUOFF); //interrupt example, stops cpu until interrupt is active
-
-
-
-
-
-
-}
-
-
-
-
-
-}
-
-

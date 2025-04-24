@@ -1,81 +1,60 @@
-#include <sensors.h>
+#include "sensors.h"
 
-//for thermocouple, thermistor and potentiometer (3 sensors that takes a physical element into digital; ADC modules)
+volatile char ADCFinished = 0;
+volatile unsigned int ADCResult = 0;
+unsigned int FLAME_THRESHOLD 1000;  // Adjust based on flame signal ADC value
 
-//learning how to take a signal reading; refer to adc reference code that is provided adc_12_01
-
-unsigned int readThermistor() { // pin 1.6 (A6); refer to datatsheet on how to connect/configure adc pins
-
-    unsigned int result;
-
-
-    result = readADC(6); //common function that each device will likely share
-    
-  
+unsigned int readThermistor() {
+    unsigned int thermADC = readADC(6); // P1.6 = A6
+    unsigned int potADC = readADC(5);   // P1.5 = A5
+    return thermADC;
+    return (thermADC > potADC) ? 1 : 0; // Over-temp = 1
 }
 
-unsigned int readThermocouple(){ // pin 1.3 (A3)
-    unsigned int result;
-    
-    result = readADC(3);
-
+unsigned int readThermocouple() {
+    unsigned int result = readADC(3); // P1.3 = A3
+    return result;
+    return (result > FLAME_THRESHOLD) ? 1 : 0; // Flame present = 1
 }
 
+unsigned int readPot() {
+    return readADC(5); // P1.5 = A5
+}
 
+void initADC() {
+    // Configure ADC Pins
+    P1SEL0 |= BIT3 | BIT5 | BIT6;
+    P1SEL1 |= BIT3 | BIT5 | BIT6;
 
-   void initADC(){ //only have to write it one
-        //Configure ADC Pins
-        P1SEL0 |= BIT3 | BIT6 | BIT5;
-        P1SEL1 |= BIT3 | BIT6 | BIT5;
+    // Configure ADC core
+    ADCCTL0 |= ADCSHT_2 | ADCON;     // ADC ON, S&H = 16 ADC clocks
+    ADCCTL1 |= ADCSHP;               // Use sampling timer
+    ADCCTL2 &= ~ADCRES;
+    ADCCTL2 |= ADCRES_2;             // 12-bit resolution
+    ADCIE |= ADCIE0;                 // Enable ADC interrupt
+}
 
+unsigned int readADC(char ADCChannel) {
+    ADCCTL0 &= ~ADCENC;              // Disable ADC before changing channel
+    ADCMCTL0 &= ~ADCINCH_15;         // Clear previous channel selection
 
-        //configure adc core; going between user guide and datasheet; can look at macros that are useful for this configuration
-        ADCCTL0 |= ADCSHT_2 | ADCON;                             // ADCON, S&H=16 ADC clks
-        ADCCTL1 |= ADCSHP;                                       // ADCCLK = MODOSC; sampling timer
-        ADCCTL2 &= ~ADCRES;                                      // clear ADCRES in ADCCTL
-        ADCCTL2 |= ADCRES_2;                                     // 12-bit conversion results
-                                    
-       
-
-
-
+    switch(ADCChannel) {
+        case 3: ADCMCTL0 |= ADCINCH_3; break;
+        case 5: ADCMCTL0 |= ADCINCH_5; break;
+        case 6: ADCMCTL0 |= ADCINCH_6; break;
+        default: ADCMCTL0 |= ADCINCH_3; break; // Default to thermocouple
     }
 
-unsigned int readPOT(){ // pin 1.5 (A5)
-
-    unsigned int result;
-    
-    result = readADC(5);
-
-}
-
-unsigned int readADC(char Channel){ //need to return a 12-bit number to read temperature; need interrupts to be enabled
-
-    swicth(Channel){ //case statments to target each based on input
-
-
-        case 3: ADCMCTL0 |= ADCINCH_3;
-            break;
-        case 5: ADCMCTL0 |= ADCINCH_5;
-            break;
-        case 6: ADCMCTL0 |= ADCINCH_6;
-            break;
-        default: ADCMCTL0 |= ADCINCH_3;
-            break;
-
-    }
-
-
-
-    ADCCTL0 |= ADCENC | ADCSC; 
-    while(ADCFinished != 1);  //as long as function does not = to 1, it'll constantly check it
+    ADCFinished = 0;
+    ADCCTL0 |= ADCENC | ADCSC;       // Start conversion
+    while (!ADCFinished);            // Wait for result
     return ADCResult;
-
-    // ADC interrupt service routine
 }
+
+ // ADC interrupt service routin
 
 #pragma vector=ADC_VECTOR
-__interrupt void ADC_ISR(void)
+__interrupt void ADC_ISR(void) //interrupt 
 {
     switch(__even_in_range(ADCIV,ADCIV_ADCIFG))
     {
