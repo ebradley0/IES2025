@@ -6,13 +6,13 @@ void init_GPIO() {
   //  Pilot - 5.0 output
   // CallForHeat - 3.1
   // Output configuration
-  P5OUT &= ~(BIT4 & BIT0);
+  P5OUT &= ~(BIT4 | BIT0);
   P5DIR |= BIT4; // Set pin 5.4 as output
   P5DIR |= BIT0; // Set pin 5.0 as output
 
   // Input Configuration, Interrupt enabled.
   P3OUT &= ~BIT1; // Clear port
-  P3DIR &= ~BiT1;
+  P3DIR &= ~BIT1;
 }
 
 void setPilot(bool open) {

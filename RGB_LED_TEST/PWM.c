@@ -1,7 +1,7 @@
 #include "PWM.h"
 
 void setRGB(char red, char green, char blue) {
-  TB3CCR1 = red << 2;
+  TB3CCR1 = red << 0 2;
   TB3CCR2 = green << 2;
   TB3CCR3 = blue << 2;
 }
@@ -32,7 +32,8 @@ void initPWM() {
   P2SEL0 |= BIT1;
   P2SEL1 &= ~BIT1; // Redundancy check to make sure sel1 is 0.
   TB1CCTL2 = OUTMOD_7;
-  TB1CCR2 = 500; // Servo is initialized to be closed, so no signal
+  TB1CCR2 =
+      500; // Servo is initialized to be closed, so no signal 500 to 2500 us
 
   // Cleanup
   TB3CTL = TBSSEL__SMCLK | MC__UP | TBCLR; // SMCLK, up mode, clear TBR

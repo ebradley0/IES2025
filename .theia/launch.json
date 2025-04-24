@@ -9,6 +9,15 @@
                 "name": "RGB_LED_TEST",
                 "resourceId": "/RGB_LED_TEST"
             }
+        },
+        {
+            "name": "GPIO.c",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "GPIO.c",
+                "resourceId": "/GPIO.c"
+            }
         }
     ]
 }
